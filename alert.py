@@ -12,6 +12,7 @@ from googleapiclient.errors import HttpError
 
 def getCalendarData():
     SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
+    CALENDAR_IDS = ["abeyy315@gmail.com", "jmaxwell@tocafootball.com"]
 
     creds = None
 
@@ -44,21 +45,24 @@ def getCalendarData():
         start_of_day_str = start_of_day.isoformat()
         end_of_day_str = end_of_day.isoformat()
         
-        eventsResult = (
-            service.events()
-            .list(
-                calendarId="my.calendar@gmail.com",
-                timeMin=start_of_day_str,
-                timeMax=end_of_day_str,
-                maxResults=10,
-                singleEvents=True,
-                orderBy="startTime",
-            ).execute()
-        )
+        allEvents = []
+        for calendar_Id in CALENDAR_IDS:
+            eventsResult = (
+                service.events()
+                .list(
+                    calendarId=calendar_Id,
+                    timeMin=start_of_day_str,
+                    timeMax=end_of_day_str,
+                    maxResults=10,
+                    singleEvents=True,
+                    orderBy="startTime",
+                ).execute()
+            )
 
-        events = eventsResult.get("items", [])
+            events = eventsResult.get("items", [])
+            allEvents.extend(events)
 
-        return events
+        return allEvents
     except HttpError as error:
         print(error)
 
