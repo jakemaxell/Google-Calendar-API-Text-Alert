@@ -67,13 +67,20 @@ def getCalendarData():
 def stringifyCalendar():
     returnData = "Good Morning Jacob. Here are your events of today. Have a good day! :)\n"
 
+    counter = 1
     myList = getCalendarData()
     for event in myList:
-        dateString = event['start']['dateTime']
-        dateObject = datetime.fromisoformat(dateString)
-        dateFormatted = dateObject.strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            dateString = event['start']['dateTime']
+            dateObject = datetime.fromisoformat(dateString)
+            dateFormatted = dateObject.strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            dateString = event['start']['date']
+            dateObject = datetime.fromisoformat(dateString)
+            dateFormatted = dateObject.strftime("%Y-%m-%d %H:%M:%S")
 
-        returnData = returnData + "\n" + event['summary'] + " starts at " + dateFormatted + "\n"
+        returnData = returnData + "\n" + str(counter) + ": " + event['summary'] + " starts at " + dateFormatted + "\n"
+        counter = counter + 1
 
     return returnData
 
